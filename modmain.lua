@@ -1,9 +1,27 @@
-local THRESHOLD = 0.2
+local TOOL_THRESHOLD = GetModConfigData("Tool Threshold")
+local ARMOR_THRESHOLD = GetModConfigData("Armor Threshold")
+local HEADWEAR_THRESHOLD = GetModConfigData("Headwear Threshold")
+
 AddPlayerPostInit(function(inst)
     inst:ListenForEvent("playeractivated", function()
         if inst ~= GLOBAL.ThePlayer then return end
 
         local warned = {}
+
+        local function GetThresholdForItem(item)
+            local equippable = item.replica.equippable
+            local slot = equippable and equippable:EquipSlot()
+
+            if slot == GLOBAL.EQUIPSLOTS.HEAD then
+                return HEADWEAR_THRESHOLD
+            elseif slot == GLOBAL.EQUIPSLOTS.BODY then
+                return ARMOR_THRESHOLD
+            else
+                -- HANDS (weapons/tools) or fallback
+                return TOOL_THRESHOLD
+            end
+        end
+
 
         local function GetDurabilityPercent(item)
             local ii = item.replica.inventoryitem
@@ -14,13 +32,13 @@ AddPlayerPostInit(function(inst)
             return nil
         end
 
-        local function CheckItem(item)
+        local function CheckItem(item, threshold)
             if item == nil then return end
             local percent = GetDurabilityPercent(item)
 
             if percent == nil then return end
 
-            if percent <= THRESHOLD then
+            if percent <= threshold then
                 if not warned[item] then
                     warned[item] = true
                     GLOBAL.ThePlayer.SoundEmitter:PlaySound("dontstarve/common/horn_beefalo")
@@ -31,10 +49,11 @@ AddPlayerPostInit(function(inst)
         end
 
         local function WatchItem(item)
-            if item == nil then return end
-            warned[item] = GetDurabilityPercent(item) <= THRESHOLD
-            inst:ListenForEvent("percentusedchange", function() CheckItem(item) end, item)
-            CheckItem(item)
+            local threshold = GetThresholdForItem(item)
+            if item == nil  or threshold == 0 then return end
+            warned[item] = GetDurabilityPercent(item) <= threshold
+            inst:ListenForEvent("percentusedchange", function() CheckItem(item, threshold) end, item)
+            CheckItem(item, threshold)
         end
 
         local function UnwatchItem(item)
