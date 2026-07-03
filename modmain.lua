@@ -1,7 +1,8 @@
 print("LDA: LOADED")
+local THRESHOLD = 0.8
 AddPlayerPostInit(function(inst)
     inst:ListenForEvent("playeractivated", function()
-        if inst ~= GLOBAL.ThePlayer then return end -- only run for the local client's own player
+        if inst ~= GLOBAL.ThePlayer then return end
 
         local warned = {}
 
@@ -35,6 +36,7 @@ AddPlayerPostInit(function(inst)
         local function WatchItem(item)
             print("LDA: WATCHING ITEM", item)
             if item == nil then return end
+            warned[item] = GetDurabilityPercent(item) < THRESHOLD
             inst:ListenForEvent("percentusedchange", function() CheckItem(item) end, item)
             CheckItem(item)
         end
@@ -50,7 +52,7 @@ AddPlayerPostInit(function(inst)
         inst:ListenForEvent("equip", function(_, data) WatchItem(data.item) end)
         inst:ListenForEvent("unequip", function(_, data) UnwatchItem(data.item) end)
 
-        -- Add for currently equipped items
+        -- Add for currently equipped items at startup
         local equipped_weapon = inst.replica.inventory:GetEquippedItem(GLOBAL.EQUIPSLOTS.HANDS)
         WatchItem(equipped_weapon)
 
