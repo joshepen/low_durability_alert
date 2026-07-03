@@ -1,5 +1,7 @@
+-- TODO
+-- Remove print logs
 print("LDA: LOADED")
-local THRESHOLD = 0.8
+local THRESHOLD = 0.2
 AddPlayerPostInit(function(inst)
     inst:ListenForEvent("playeractivated", function()
         if inst ~= GLOBAL.ThePlayer then return end
@@ -22,7 +24,7 @@ AddPlayerPostInit(function(inst)
 
             if percent == nil then return end
 
-            if percent < 0.80 then
+            if percent <= THRESHOLD then
                 if not warned[item] then
                     warned[item] = true
                     print("LDA: PLAYING SOUND")
@@ -36,7 +38,7 @@ AddPlayerPostInit(function(inst)
         local function WatchItem(item)
             print("LDA: WATCHING ITEM", item)
             if item == nil then return end
-            warned[item] = GetDurabilityPercent(item) < THRESHOLD
+            warned[item] = GetDurabilityPercent(item) <= THRESHOLD
             inst:ListenForEvent("percentusedchange", function() CheckItem(item) end, item)
             CheckItem(item)
         end
