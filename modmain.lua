@@ -49,9 +49,14 @@ AddPlayerPostInit(function(inst)
         end
 
         local function WatchItem(item)
+            if item == nil then return end
+
             local threshold = GetThresholdForItem(item)
-            if item == nil  or threshold == 0 then return end
-            warned[item] = GetDurabilityPercent(item) <= threshold
+            if threshold == 0 then return end
+
+            local percent = GetDurabilityPercent(item)
+            warned[item] = percent ~= nil and percent <= threshold
+
             inst:ListenForEvent("percentusedchange", function() CheckItem(item, threshold) end, item)
             CheckItem(item, threshold)
         end
