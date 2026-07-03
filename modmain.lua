@@ -1,6 +1,3 @@
--- TODO
--- Remove print logs
-print("LDA: LOADED")
 local THRESHOLD = 0.2
 AddPlayerPostInit(function(inst)
     inst:ListenForEvent("playeractivated", function()
@@ -20,14 +17,12 @@ AddPlayerPostInit(function(inst)
         local function CheckItem(item)
             if item == nil then return end
             local percent = GetDurabilityPercent(item)
-            print("LDA: CHECKING ITEM", item, "percent:", percent, "finiteuses:", item.replica.finiteuses, "armor:", item.replica.armor)
 
             if percent == nil then return end
 
             if percent <= THRESHOLD then
                 if not warned[item] then
                     warned[item] = true
-                    print("LDA: PLAYING SOUND")
                     GLOBAL.ThePlayer.SoundEmitter:PlaySound("dontstarve/common/horn_beefalo")
                 end
             else
@@ -36,7 +31,6 @@ AddPlayerPostInit(function(inst)
         end
 
         local function WatchItem(item)
-            print("LDA: WATCHING ITEM", item)
             if item == nil then return end
             warned[item] = GetDurabilityPercent(item) <= THRESHOLD
             inst:ListenForEvent("percentusedchange", function() CheckItem(item) end, item)
@@ -44,13 +38,11 @@ AddPlayerPostInit(function(inst)
         end
 
         local function UnwatchItem(item)
-            print("LDA: UNWATCH ITEM", item)
             if item == nil then return end
             inst:RemoveEventCallback("percentusedchange", nil, item)
             warned[item] = nil
         end
 
-        print("LDA: PLAYER ACTIVATED")
         inst:ListenForEvent("equip", function(_, data) WatchItem(data.item) end)
         inst:ListenForEvent("unequip", function(_, data) UnwatchItem(data.item) end)
 
