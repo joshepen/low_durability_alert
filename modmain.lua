@@ -1,4 +1,4 @@
-local THRESHOLD = 0.2
+local THRESHOLD = GetModConfigData("Threshold")
 AddPlayerPostInit(function(inst)
     inst:ListenForEvent("playeractivated", function()
         if inst ~= GLOBAL.ThePlayer then return end
@@ -31,7 +31,7 @@ AddPlayerPostInit(function(inst)
         end
 
         local function WatchItem(item)
-            if item == nil then return end
+            if item == nil  or THRESHOLD == 0 then return end
             warned[item] = GetDurabilityPercent(item) <= THRESHOLD
             inst:ListenForEvent("percentusedchange", function() CheckItem(item) end, item)
             CheckItem(item)
