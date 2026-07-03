@@ -68,8 +68,21 @@ local percent_options = {{
         data = 0.95
     }}
 configuration_options = {{
-    name = "Threshold",
-    hover = "Percent at which to alert you of low durability",
+    name = "Tool Threshold",
+    hover = "Percent at which to alert you of low tool durability",
     options = percent_options,
     default = 0.2
-}}
+},
+{
+    name = "Armor Threshold",
+    hover = "Percent at which to alert you of low armor durability",
+    options = percent_options,
+    default = 0.2
+},
+{
+    name = "Headwear Threshold",
+    hover = "Percent at which to alert you of low headwear durability",
+    options = percent_options,
+    default = 0.2
+}
+}
