@@ -1,6 +1,9 @@
 local TOOL_THRESHOLD = GetModConfigData("Tool Threshold")
 local ARMOR_THRESHOLD = GetModConfigData("Armor Threshold")
 local HEADWEAR_THRESHOLD = GetModConfigData("Headwear Threshold")
+local TOOL_SOUND = GetModConfigData("Tool Sound")
+local ARMOR_SOUND = GetModConfigData("Armor Sound")
+local HEADWEAR_SOUND = GetModConfigData("Headwear Sound")
 
 AddPlayerPostInit(function(inst)
     inst:ListenForEvent("playeractivated", function()
@@ -17,8 +20,20 @@ AddPlayerPostInit(function(inst)
             elseif slot == GLOBAL.EQUIPSLOTS.BODY then
                 return ARMOR_THRESHOLD
             else
-                -- HANDS (weapons/tools) or fallback
                 return TOOL_THRESHOLD
+            end
+        end
+
+        local function GetSoundForItem(item)
+            local equippable = item.replica.equippable
+            local slot = equippable and equippable:EquipSlot()
+
+            if slot == GLOBAL.EQUIPSLOTS.HEAD then
+                return HEADWEAR_SOUND
+            elseif slot == GLOBAL.EQUIPSLOTS.BODY then
+                return ARMOR_SOUND
+            else
+                return TOOL_SOUND
             end
         end
 
@@ -41,7 +56,7 @@ AddPlayerPostInit(function(inst)
             if percent <= threshold then
                 if not warned[item] then
                     warned[item] = true
-                    GLOBAL.ThePlayer.SoundEmitter:PlaySound("dontstarve/common/horn_beefalo")
+                    GLOBAL.ThePlayer.SoundEmitter:PlaySound(GetSoundForItem(item))
                 end
             else
                 warned[item] = nil

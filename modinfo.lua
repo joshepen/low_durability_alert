@@ -69,11 +69,39 @@ local percent_options = {{
         description = "95%",
         data = 0.95
     }}
+local sound_options = {
+    {
+        description = "Beefalo Horn",
+        data = "dontstarve/common/horn_beefalo"
+    },
+    {
+        description = "Maxwell Portal Activate",
+        data = "dontstarve/common/maxwellportal_activate"
+    },
+    {
+        description = "Maxwell Portal Shutdown",
+        data = "dontstarve/common/maxwellportal_shutdown"
+    },
+    {
+        description = "Gem Shatter",
+        data = "dontstarve/common/gem_shatter"
+    },
+    {
+        description = "Open Golf",
+        data = "dontstarve/common/teleportworm/open_golf"
+    },
+}
 configuration_options = {{
     name = "Tool Threshold",
     hover = "Percent at which to alert you of low tool durability",
     options = percent_options,
     default = 0.2
+},
+{
+    name = "Tool Sound",
+    hover = "Sound to play when tool durability is low",
+    options = sound_options,
+    default = "dontstarve/common/horn_beefalo"
 },
 {
     name = "Armor Threshold",
@@ -82,9 +110,21 @@ configuration_options = {{
     default = 0.2
 },
 {
+    name = "Armor Sound",
+    hover = "Sound to play when armor durability is low",
+    options = sound_options,
+    default = "dontstarve/common/horn_beefalo"
+},
+{
     name = "Headwear Threshold",
     hover = "Percent at which to alert you of low headwear durability",
     options = percent_options,
     default = 0.2
+},
+{
+    name = "Headwear Sound",
+    hover = "Sound to play when headwear durability is low",
+    options = sound_options,
+    default = "dontstarve/common/horn_beefalo"
 }
 }
